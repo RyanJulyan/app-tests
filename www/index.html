@@ -1,130 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>jQuery Knob demo</title>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-        <script src="js/jquery.knob.js"></script>
-        <script>
-            $(function($) {
-
-                $(".knob").knob({
-                    change : function (value) {
-                        //console.log("change : " + value);
-                    },
-                    release : function (value) {
-                        //console.log(this.$.attr('value'));
-                        console.log("release : " + value);
-                    },
-                    cancel : function () {
-                        console.log("cancel : ", this);
-                    },
-                    draw : function () {
-
-                        // "tron" case
-                        if(this.$.data('skin') == 'tron') {
-
-                            var a = this.angle(this.cv)  // Angle
-                                , sa = this.startAngle          // Previous start angle
-                                , sat = this.startAngle         // Start angle
-                                , ea                            // Previous end angle
-                                , eat = sat + a                 // End angle
-                                , r = 1;
-
-                            this.g.lineWidth = this.lineWidth;
-
-                            this.o.cursor
-                                && (sat = eat - 0.3)
-                                && (eat = eat + 0.3);
-
-                            if (this.o.displayPrevious) {
-                                ea = this.startAngle + this.angle(this.v);
-                                this.o.cursor
-                                    && (sa = ea - 0.3)
-                                    && (ea = ea + 0.3);
-                                this.g.beginPath();
-                                this.g.strokeStyle = this.pColor;
-                                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
-                                this.g.stroke();
-                            }
-
-                            this.g.beginPath();
-                            this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-                            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
-                            this.g.stroke();
-
-                            this.g.lineWidth = 2;
-                            this.g.beginPath();
-                            this.g.strokeStyle = this.o.fgColor;
-                            this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
-                            this.g.stroke();
-
-                            return false;
-                        }
-                    }
-                });
-
-                // Example of infinite knob, iPod click wheel
-                var v, up=0,down=0,i=0
-                    ,$idir = $("div.idir")
-                    ,$ival = $("div.ival")
-                    ,incr = function() { i++; $idir.show().html("+").fadeOut(); $ival.html(i); }
-                    ,decr = function() { i--; $idir.show().html("-").fadeOut(); $ival.html(i); };
-                $("input.infinite").knob(
-                                    {
-                                    min : 0
-                                    , max : 20
-                                    , stopper : false
-                                    , change : function () {
-                                                    if(v > this.cv){
-                                                        if(up){
-                                                            decr();
-                                                            up=0;
-                                                        }else{up=1;down=0;}
-                                                    } else {
-                                                        if(v < this.cv){
-                                                            if(down){
-                                                                incr();
-                                                                down=0;
-                                                            }else{down=1;up=0;}
-                                                        }
-                                                    }
-                                                    v = this.cv;
-                                                }
-                                    });
-            });
-        </script>
-        <style>
-            body{
-              padding: 0;
-              margin: 0px 50px;
-              font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-              font-weight: 300;
-              text-rendering: optimizelegibility;
-			  background-color: #4C9BC0;
-            }
-            p{font-size: 30px; line-height: 30px}
-            div.demo{text-align: center; width: 280px; float: left}
-            div.demo > p{font-size: 20px}
-        </style>
-    </head>
-    <body>
-    <div style="clear:both"></div>
-        <div style="height: 340px">
-          <div class="demo" style=" background-color:#FFF; color:#000;">
-              <p>&#215; Editable</p>
-                <input class="knob" data-width="150" data-displayPrevious=true data-inputColor="#f2ac29" data-fgColor="#f2762e" data-skin="tron" data-thickness=".2" value="50">
-            </div>
-          <div class="demo" style="background-color:#FFF; color:#000">
-            <p>&#215; Readonly</p>
-            <input class="knob" data-width="150" data-displayPrevious=true data-inputColor="#9136c7" data-fgColor="#632587" data-skin="tron" data-thickness=".2" value="100" data-readOnly=true >
-          </div>
-          
-          <div class="demo" style="background-color:#FFF; color:#000">
-            <p>&#215; Readonly</p>
-          <input class="knob" data-width="150" data-displayPrevious=true data-inputColor="#74889d" data-fgColor="#235a74" data-skin="tron" data-thickness=".2" value="100" data-readOnly=true >
-          </div>
-        </div>
-        <div style="clear:both"></div>
-        
-</body>
+  <head>
+    <script src='https://cdn.firebase.com/v0/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <link rel='stylesheet' type='text/css' href='../css/example.css'>
+  </head>
+  <body>
+    <div id='messagesDiv'></div>
+    <input type='text' id='nameInput' placeholder='Name'>
+    <input type='text' id='messageInput' placeholder='Message'>
+    <script>
+      var myDataRef = new Firebase('https://z8hcvcu6t16.firebaseio-demo.com/');
+      $('#messageInput').keypress(function (e) {
+        if (e.keyCode == 13) {
+          var name = $('#nameInput').val();
+          var text = $('#messageInput').val();
+          myDataRef.push({name: name, text: text});
+          $('#messageInput').val('');
+        }
+      });
+      myDataRef.on('child_added', function(snapshot) {
+        var message = snapshot.val();
+        displayChatMessage(message.name, message.text);
+      });
+      function displayChatMessage(name, text) {
+        $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+      };
+    </script>
+  </body>
 </html>
