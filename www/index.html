@@ -1,32 +1,30 @@
-<!doctype html>
+<!-- JSON_tutorial_3.html -->
+
+<!DOCTYPE html>
 <html>
-  <head>
-    <script src='https://cdn.firebase.com/v0/firebase.js'></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
-    <link rel='stylesheet' type='text/css' href='../css/example.css'>
-  </head>
-  <body>
-    <div id='messagesDiv'></div>
-    <input type='text' id='nameInput' placeholder='Name'>
-    <input type='text' id='messageInput' placeholder='Message'>
-    <script>
-      var myDataRef = new Firebase('https://z8hcvcu6t16.firebaseio-demo.com/');
-      $('#messageInput').keypress(function (e) {
-        if (e.keyCode == 13) {
-          var name = $('#nameInput').val();
-          var text = $('#messageInput').val();
-          myDataRef.push({name: name, text: text});
-          $('#messageInput').val('');
-        }
-      });
-      myDataRef.on('child_added', function(snapshot) {
-        var message = snapshot.val();
-        displayChatMessage(message.name, message.text);
-      });
-      function displayChatMessage(name, text) {
-        $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-      };
-    </script>
-  </body>
+<head>
+<script type="text/javascript">
+function ajax_get_json(){
+	var results = document.getElementById("results");
+    var hr = new XMLHttpRequest();
+    hr.open("GET", "my_json_list.php", true);
+    hr.setRequestHeader("Content-type", "application/json");
+    hr.onreadystatechange = function() {
+	    if(hr.readyState == 4 && hr.status == 200) {
+		    var data = JSON.parse(hr.responseText);
+			results.innerHTML = "";
+			for(var obj in data){
+				results.innerHTML += data[obj].user+" is "+data[obj].age+" and lives in "+data[obj].country+"<hr />";
+			}
+	    }
+    }
+    hr.send(null);
+    results.innerHTML = "requesting...";
+}
+</script>
+</head>
+<body>
+<div id="results"></div>
+<script type="text/javascript">ajax_get_json();</script>
+</body>
 </html>
