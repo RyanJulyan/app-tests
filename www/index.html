@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset=utf-8>
-<html lang="en">
+<html>
 	<head>
 		<title>BarcodeReader</title>
 	</head>
@@ -40,10 +40,10 @@
 					}
 				}
 			}
-			var DecodeWorker = new Worker("DecoderWorker.js");
-			var RightWorker = new Worker("DecoderWorker.js");
-			var LeftWorker = new Worker("DecoderWorker.js");
-			var FlipWorker = new Worker("DecoderWorker.js");
+			var DecodeWorker = new Worker("http://192.168.1.106/Testing%20Grounds/Barcode%20Scanner/DecoderWorker.js");
+			var RightWorker = new Worker("http://192.168.1.106/Testing%20Grounds/Barcode%20Scanner/DecoderWorker.js");
+			var LeftWorker = new Worker("http://192.168.1.106/Testing%20Grounds/Barcode%20Scanner/DecoderWorker.js");
+			var FlipWorker = new Worker("http://192.168.1.106/Testing%20Grounds/Barcode%20Scanner/DecoderWorker.js");
 			DecodeWorker.onmessage = receiveMessage;
 			RightWorker.onmessage = receiveMessage;
 			LeftWorker.onmessage = receiveMessage;
