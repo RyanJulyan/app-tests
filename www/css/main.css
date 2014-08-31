@@ -33,7 +33,7 @@ body{
 	position:inherit !important; 
 }
 #totalSubs, #cur_UserName, #cur_subs, #User_Sync, #Data_Sync{
-	color: #F90;
+	color: #06C;
 }
 .smallText{
 	font-size:10px;
